@@ -33,19 +33,6 @@ spec:
     requests:
       storage: 10Gi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio-service
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 9000
-      protocol: TCP
-  selector:
-    app: minio-server
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -88,6 +75,20 @@ spec:
       nodeSelector:
         kind: storage
         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio-server
+
 # Traefik ingress support
 ---
 apiVersion: extensions/v1beta1
@@ -95,8 +96,7 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
-  name: minio
+  name: minio-ingress
 spec:
   rules:
   - host: minio.detainedu.lan
