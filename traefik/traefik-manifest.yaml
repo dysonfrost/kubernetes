@@ -1,0 +1,156 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  traefik
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+  namespace: traefik
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: traefik
+  name: traefik-conf
+data:
+  traefik.toml: |
+    # traefik.toml
+    logLevel = "DEBUG"
+ 
+    [traefikLog]
+      filePath = "log/traefik.log"
+      format   = "json"
+ 
+    [accessLog]
+      filePath = "log/access.log"
+      format = "json"
+    
+    defaultEntryPoints = ["http"]
+    
+    [entryPoints]
+        [entryPoints.http]
+        users =  ['admin:$apr1$qUbgpZXE$D04QTRKVrTZ.z6XEMM/ML1']
+        address = ":9090"
+    
+    [web]
+    address = ":8095"
+    
+    [backends]
+      [backends.backend]
+         [backends.backend.LoadBalancer]
+           method = "wrr"
+         [backends.backend.servers.server1]
+         url = ":8080"
+         weight = 1
+    
+    [frontends]
+      [frontends.frontend1]
+      backend = "backend"
+        [frontends.frontend1.routes.test_1]
+        rule = "Host:traefik.detainedu.lan"
+
+---
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: traefik-ingress-controller
+  namespace: traefik
+  labels:
+    k8s-app: traefik-ingress-lb
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: config
+        configMap:
+          name: traefik-conf
+      # Enable this only if using static wildcard cert
+      # stored in a k8s Secret instead of LetsEncrypt
+      #- name: ssl
+      #  secret:
+      #    secretName: traefik-cert
+      containers:
+      - image: traefik
+        name: traefik-ingress-lb
+        resources:
+          limits:
+            cpu: 200m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: "/config"
+          name: "config"
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 8080
+        args:
+        - --api
+        - --kubernetes
+        - --logLevel=INFO
+        - --web
+        - --configfile=/config/traefik.toml
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress-service
+  namespace: traefik
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+    - protocol: TCP
+      port: 8080
+      name: admin
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-web-ui
+  namespace: traefik
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+  annotations:
+   kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: traefik.detainedu.lan
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: traefik-web-ui
+          servicePort: 80

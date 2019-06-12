@@ -33,3 +33,22 @@ spec:
   selector:
     app: whoami
   type: LoadBalancer
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+  name: whoami
+spec:
+  rules:
+  - host: whoami.detainedu.lan
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: whoami
+          servicePort: 80
+
