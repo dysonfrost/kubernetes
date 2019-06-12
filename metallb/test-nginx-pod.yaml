@@ -34,20 +34,20 @@ spec:
   type: LoadBalancer
 
 # Traefik ingress support
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
-  name: nginx
-spec:
-  rules:
-  - host: web.detainedu.lan
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: nginx
-          servicePort: 80
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+#   name: nginx
+# spec:
+#   rules:
+#   - host: web.detainedu.lan
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: nginx
+#           servicePort: 80
