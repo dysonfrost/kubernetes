@@ -12,7 +12,7 @@ Traefik will be used as an Ingress Controller behind MetalLB on a Bare Metal Kub
 
 A generated password *(note SHA1 didn’t work for me i.e. -nbs)*, run the below (md5 hash):
 
-```shell
+```sh
 htpasswd -nbm admin password1234
 admin:$apr1$ZywpxeoS$6U80kYPG116slxBceEsVz0
 ```
@@ -45,11 +45,11 @@ Let's take a look at the manifest. It's divided into 7 distinct blocks:
 
 5) Creation of a Traefik Ingress `Service` 
 
-    - *A service to manage the internal traffic of the cluster, exposed as a `NodePort` on a Cluster-IP.*
+    - *A service to manage the internal traffic of the cluster, exposed as a `LoadBalancer` on an External-IP.*
 
 6) Creation of a Traefik User Interface `Service`
 
-    - *A service to manage Traefik from a dashboard exposed as a `LoadBalancer` on an External-IP.*
+    - *A service to access Traefik from a dashboard exposed as a `Cluser-IP`.*
 
 7) Creation of a Traefik Dashboard `Ingress`
 
@@ -59,57 +59,67 @@ Let's take a look at the manifest. It's divided into 7 distinct blocks:
 
 Please connect to the `manager` virtual machine and apply this configuration:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/traefik/traefik-rbac.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/traefik/traefik-rbac.yaml
+```
 
 Make sure the RBAC resources have been properly applied
 
-`kubectl get clusterrole traefik-ingress-controller`  
-`kubectl get clusterrolebinding traefik-ingress-controller`
+```sh
+kubectl get clusterrole traefik-ingress-controller
+kubectl get clusterrolebinding traefik-ingress-controller
+```
 
 Expected output:
 
-```
+```sh
 NAME                         AGE
 traefik-ingress-controller   1m
 ```
 
 You can apply the manifest:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/traefik/traefik-manifest.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/traefik/traefik-manifest.yaml
+```
 
 Some commands to make sure the traefik deployment is a success:
 
-```
+```sh
 kubectl -n traefik get serviceaccounts
 NAME                         SECRETS   AGE
 default                      1         4m
 traefik-ingress-controller   1         4m
 ```
-```
+```sh
 kubectl -n traefik get configmaps traefik-conf
 NAME           DATA   AGE
 traefik-conf   1      4m
 ```
-```
+```sh
 kubectl -n traefik get daemonsets
 NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 traefik-ingress-controller   3         3         3       0            3           <none>          4m
 ```
-```
+```sh
 kubectl -n traefik get services
 NAME                      TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
-traefik-ingress-service   NodePort       10.152.183.142   <none>          80:30190/TCP   4m
-traefik-web-ui            LoadBalancer   10.152.183.28    192.168.1.130   80:30966/TCP   4m
+traefik-ingress-service   NodePort       10.152.183.142   192.168.1.130   80:30190/TCP   4m
+traefik-web-ui            LoadBalancer   10.152.183.28    <none>          80:30966/TCP   4m
 ```
-```
+```sh
 kubectl -n traefik get ingresses
 NAME                HOSTS                   ADDRESS   PORTS   AGE
 traefik-dashboard   traefik.detainedu.lan             80      4m
 ```
   
-Make sure you have access to the dashboard using `traefik-web-ui` External-IP:
+Make sure you have access to the dashboard using `traefik-ingress-service` External-IP:
 
-`curl http://traefik.mydomain`
+```sh
+curl http://traefik.mydomain
+# OR
+curl http://<External-IP>:<servicePort>
+```
 
 Expected output:
 ```html

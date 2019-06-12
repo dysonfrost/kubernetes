@@ -9,7 +9,9 @@ MinIO server is light enough to be bundled with the application stack, similar t
 
 ### Check the presence of the label `storage` in the kubernetes configuration
 
-`kubectl get nodes --show-labels | grep storage`
+```sh
+kubectl get nodes --show-labels | grep storage
+```
 
 
 ### Install minio on a Kubernetes cluster
@@ -18,15 +20,21 @@ To install minio on a kubernetes cluster, you need to declare a label on the wor
 
 Example:
 
-`kubectl label nodes <node-name> <label>=<value>`
+```sh
+kubectl label nodes <node-name> <label>=<value>
+```
 
 Please connect to the `manager` virtual machine and apply this configuration:
 
-`kubectl label nodes juju-ea0acb-11 kind=storage`
+```sh
+kubectl label nodes juju-ea0acb-11 kind=storage
+```
 
 Finally, connect to the `worker` where the label has been applied and create a directory for minio to store data.
 
-`mkdir -p /opt/storage`
+```sh
+mkdir -p /opt/storage
+```
 
 ## Config files related to minio for 5ESGI-PA
 
@@ -53,3 +61,9 @@ No need to modify your application to use an unfamiliar service discovery mechan
 A `Deployment controller` provides declarative updates for Pods and ReplicaSets.
 
 You describe a desired state in a Deployment object, and the Deployment controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.
+
+To deploy minio, simply run
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/minio/minio-manifest.yaml
+```

@@ -7,7 +7,9 @@ MetalLB is a load-balancer implementation for bare metal Kubernetes clusters, us
 
 To install MetalLB, simply apply the manifest:
 
-`kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
+```
 
 This will deploy MetalLB to your cluster, under the `metallb-system` namespace. The components in the manifest are:
 
@@ -27,7 +29,9 @@ In this configuration we tell MetalLB to hand out address from the `192.168.1.13
 
 Please connect to the `manager` virtual machine and apply this configuration:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/layer2-config.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/layer2-config.yaml
+```
 
 The configuration should take effect within a few seconds. By following the logs we can see what’s going on: `kubectl logs -l component=speaker -n metallb-system`:
 
@@ -41,7 +45,9 @@ The configuration should take effect within a few seconds. By following the logs
 
 This file contains a trivial service: an nginx pod, and a load-balancer service pointing at nginx. Deploy it to the cluster:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/test-nginx-pod.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/test-nginx-pod.yaml
+```
 
 Wait for nginx to start by monitoring `kubectl get pods`, until you see a running nginx pod. It should look something like this:
 
@@ -57,9 +63,13 @@ nginx   LoadBalancer   10.152.183.18   192.168.1.130   80:31743/TCP   24h
 ```
 We have an external IP! 
 
-MetalLB is using the first address of the assigned range (192.168.1.130).
-
+MetalLB is using the first address of the assigned range (192.168.1.130).  
 When you `curl http://192.168.1.130` you should see the default nginx page: “Welcome to nginx!”
+
+To delete the nginx service and your deployment, simply run
+```sh
+kubectl delete -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/test-nginx-pod.yaml
+```
 
 
 

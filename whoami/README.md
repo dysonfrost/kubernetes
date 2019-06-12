@@ -10,11 +10,15 @@ This manifest allows us to expose a webserver using a `whoami` service from the 
 
 To install Whoami, simply apply the manifest:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/whoami/whoami-manifest.yaml`
+```sh
+kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/whoami/whoami-manifest.yaml
+```
 
 To verify the deployment of whoami, please execute the following command on the `manager` virtual machine:
 
-`kubectl get pods -o wide --sort-by="{.spec.nodeName}"`
+```sh
+kubectl get pods -o wide --sort-by="{.spec.nodeName}"
+```
 
 - Expected output:
 ```sh

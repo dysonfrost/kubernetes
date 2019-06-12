@@ -14,7 +14,7 @@ You must have the package `golang` and `docker-ce` installed and configured.
 
 Install this project to your `$GOPATH` using `go get`:
 
-```
+```sh
 go get k8s.io/kube-state-metrics
 ```
 
@@ -22,7 +22,7 @@ go get k8s.io/kube-state-metrics
 
 Simply run the following command in this root folder, which will create a self-contained, statically-linked binary and build a Docker image
 
-```
+```sh
 make container
 ```
 
@@ -33,7 +33,7 @@ Connect to the `manager` virtual machine and simply build and run kube-state-met
 
 To deploy this project, you can simply run `kubectl apply -f kubernetes` and a Kubernetes service and deployment will be created. 
 
-```
+```sh
 cd go/src/k8s.io/kube-state-metrics
 kubectl apply -f kubenernetes
 ```
