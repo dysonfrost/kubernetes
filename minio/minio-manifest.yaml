@@ -40,7 +40,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 9000
+    - port: 80
       targetPort: 9000
       protocol: TCP
   selector:
@@ -87,3 +87,22 @@ spec:
           mountPath: "/opt/storage"
       nodeSelector:
         kind: storage
+        
+# Traefik ingress support
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+  name: minio
+spec:
+  rules:
+  - host: minio.detainedu.lan
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: minio-service
+          servicePort: 80
