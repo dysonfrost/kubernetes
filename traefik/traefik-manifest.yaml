@@ -35,11 +35,16 @@ data:
     [entryPoints]
         [entryPoints.http]
         users =  ['admin:$apr1$qUbgpZXE$D04QTRKVrTZ.z6XEMM/ML1']
-        address = ":9090"
-    
+        address = ":80"
     [web]
-    address = ":8095"
-    
+    address = ":80"
+
+    [api]
+    debug = true
+    entryPoint = "traefik"
+      [api.statistics]
+        recentErrors = 10
+   
     [backends]
       [backends.backend]
          [backends.backend.LoadBalancer]
@@ -99,10 +104,7 @@ spec:
         - name: admin
           containerPort: 8080
         args:
-        - --api
         - --kubernetes
-        - --logLevel=INFO
-        - --web
         - --configfile=/config/traefik.toml
 
 ---
@@ -118,11 +120,8 @@ spec:
     - protocol: TCP
       port: 80
       name: web
-    - protocol: TCP
-      port: 8080
-      name: admin
-  type: LoadBalancer
-
+  type: NodePort
+  
 ---
 apiVersion: v1
 kind: Service
@@ -136,6 +135,7 @@ spec:
   - name: web
     port: 80
     targetPort: 8080
+  type: LoadBalancer
 
 ---
 apiVersion: extensions/v1beta1
