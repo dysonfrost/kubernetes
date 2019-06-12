@@ -34,6 +34,7 @@ spec:
     app: whoami
   type: LoadBalancer
 
+# Traefik ingress support
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
