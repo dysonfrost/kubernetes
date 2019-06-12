@@ -27,7 +27,7 @@ In this configuration we tell MetalLB to hand out address from the `192.168.1.13
 
 Please connect to the `manager` virtual machine and apply this configuration:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/metallb/master/layer2-config.yaml`
+`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/layer2-config.yaml`
 
 The configuration should take effect within a few seconds. By following the logs we can see what’s going on: `kubectl logs -l component=speaker -n metallb-system`:
 
@@ -41,7 +41,7 @@ The configuration should take effect within a few seconds. By following the logs
 
 This file contains a trivial service: an nginx pod, and a load-balancer service pointing at nginx. Deploy it to the cluster:
 
-`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/metallb/master/test-nginx-pod.yaml`
+`kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/metallb/test-nginx-pod.yaml`
 
 Wait for nginx to start by monitoring `kubectl get pods`, until you see a running nginx pod. It should look something like this:
 
