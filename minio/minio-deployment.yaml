@@ -32,6 +32,7 @@ spec:
     # This is the request for storage. Should be available in the cluster.
     requests:
       storage: 10Gi
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -62,9 +63,15 @@ spec:
         env:
         # Minio access key and secret key
         - name: MINIO_ACCESS_KEY
-          value: "esgi"
+          valueFrom:
+            secretKeyRef:
+              name: minio-user
+              key: accesskey
         - name: MINIO_SECRET_KEY
-          value: "Espoir15"
+          valueFrom:
+            secretKeyRef:
+              name: minio-user
+              key: secretkey
         ports:
         - containerPort: 9000
           hostPort: 9000
@@ -74,35 +81,3 @@ spec:
           mountPath: "/opt/storage"
       nodeSelector:
         kind: storage
-        
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio-service
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 9000
-      protocol: TCP
-  selector:
-    app: minio-server
-
-# Traefik ingress support
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik
-  name: minio-ingress
-spec:
-  rules:
-  - host: minio.detainedu.lan
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: minio-service
-          servicePort: 80
