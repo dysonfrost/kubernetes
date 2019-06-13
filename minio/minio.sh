@@ -11,7 +11,7 @@ if [ -z "$MY_USER" ] || [ -z "$MY_SECRET" ]
 then
     read -r -p "Minio Username: " MY_USER
     while true; do
-        read -r -s -p "Minio Password: " MY_SECRET
+        read -r -s -p "Minio Password (at least 8 characters long): " MY_SECRET
         echo
         read -r -s -p "Minio Password (again): " MY_SECRET2
         echo
@@ -45,6 +45,5 @@ then
 fi
 
 # Cleanup
-unset MY_USER MY_SECRET MINIO_USER MINIO_SECRET MINIO_DEPLOY
 sed -i "0,/MY_USER=/ s/MY_USER=.*/MY_USER=''/" minio.sh
 sed -i "0,/MY_SECRET=/ s/MY_SECRET=.*/MY_SECRET=''/" minio.sh

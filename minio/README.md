@@ -38,9 +38,13 @@ mkdir -p /opt/storage
 
 ## Config files related to minio for 5ESGI-PA
 
-- minio-manifest.yaml
+### minio-secret.yaml
 
-This manifest is divided into 4 distinct blocks:
+A `Secret` is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in an image; putting it in a Secret object allows for more control over how it is used, and reduces the risk of accidental exposure.
+
+### minio-deployment.yaml
+
+This manifest is divided into 3 distinct blocks:
 
 1) PersistentVolume
 
@@ -50,20 +54,47 @@ A `PersistentVolume` (PV) is a piece of storage in the cluster that has been pro
 
 A `PersistentVolumeClaim` (PVC) is a request for storage by a user. It is similar to a pod. Pods consume node resources and PVCs consume PV resources. Pods can request specific levels of resources (CPU and Memory). Claims can request specific size and access modes (e.g., can be mounted once read/write or many times read-only).
 
-3) Service
-
-An abstract way to `expose an application` running on a set of Pods as a network service.
-
-No need to modify your application to use an unfamiliar service discovery mechanism. Kubernetes gives pods their own IP addresses and a single DNS name for a set of pods, and can load-balance across them.
-
-4) Deployments
+3) Deployments
 
 A `Deployment controller` provides declarative updates for Pods and ReplicaSets.
 
 You describe a desired state in a Deployment object, and the Deployment controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.
 
-To deploy minio, simply run
+### minio-service.yaml
 
+This manifest is divided into 2 distinct blocks:
+
+1) Service
+
+An abstract way to `expose an application` running on a set of Pods as a network service.
+
+No need to modify your application to use an unfamiliar service discovery mechanism. Kubernetes gives pods their own IP addresses and a single DNS name for a set of pods, and can load-balance across them.
+
+2) Ingress
+
+An API object that manages external access to the services in a cluster, typically HTTP.  
+Ingress can provide load balancing, SSL termination and name-based virtual hosting.
+
+### minio.sh
+
+A bash script to deploy minio in an automated and idempotent way. 
+
+This script prompts the user for a `minio username` and a `minio secret` and encode them to be used by `minio-secret.yaml` and `minio-deployment.yaml`.
+
+
+## Setup
+
+`git clone` or download/extract the archive of the repository then `cd` to `kubernetes/minio`
+
+## Build
+
+Simply execute the script, you will be prompted for an username and a secret for minio.
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/dysonfrost/kubernetes/master/minio/minio-manifest.yaml
+chmod +x minio.sh
+./minio.sh
 ```
+
+## MinIO Browser
+
+MinIO Server comes with an embedded web based object browser. Point your web browser to http://minio.domain ensure your server has started successfully.
+
