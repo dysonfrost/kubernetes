@@ -33,12 +33,20 @@ The goal of this container is to put in evidence that everytime you make a `HTTP
 
 - Expected Webpage display:
 
-```
-Hostname: whoami-6d75494548-<variable>
+```html
+Hostname: whoami-deployment-9f9c86c4f-nvm4s
 IP: 127.0.0.1
-IP: <Dynamic Cluster-IP>
+IP: <cluster-IP>
 GET / HTTP/1.1
-Host: <External-IP>
+Host: whoami.domain
+...
+X-Forwarded-For: <nodes-IP>
+X-Forwarded-Host: whoami.domain
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+X-Forwarded-Server: traefik-ingress-controller-<variable>
+X-Real-Ip: <nodes-IP>
+
 ...
 ```
 
