@@ -1,0 +1,30 @@
+service:
+  httpPort: 80
+  type: ClusterIP
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    kubernetes.io/ingress.global-static-ip-name: "drone-kube"
+    kubernetes.io/ingress.allow-http: "true"
+  hosts:
+    - # drone.domaine
+
+server:
+  host: # http://drone.domain
+  env:
+    DRONE_PROVIDER: "github"
+    DRONE_OPEN: "true"
+    DRONE_GITHUB: "true"
+    DRONE_ADMIN: # User-1, User-2
+    DRONE_GITHUB_CLIENT: # Github client id
+    DRONE_GITHUB_SECRET: # Github secret id
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  storageClassName: drone
+
+# Note: This is an unsecure configuration using HTTP
+# For production use, please use TLS
