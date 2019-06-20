@@ -3,8 +3,9 @@
 # MY_SECRET must be minimum 8 or more characters long
 MY_USER=''
 MY_SECRET=''
-MINIO_DEPLOY=$(kubectl get deployments | grep "minio-deployment " | wc -l)
-MINIO_SVC=$(kubectl get services | grep "minio-service " | wc -l)
+MINIO_DEPLOY=$(kubectl -n minio get deployments | grep "minio-deployment " | wc -l)
+MINIO_SVC=$(kubectl -n minio get services | grep "minio-service " | wc -l)
+MINIO_NS=$(kubectl get namespaces | grep "minio " | wc -l)
 
 # Prompt User and Secret if empty + Secret restrictions
 if [ -z "$MY_USER" ] || [ -z "$MY_SECRET" ]
@@ -24,10 +25,17 @@ fi
 MINIO_USER=$(echo -n $MY_USER | base64)
 MINIO_SECRET=$(echo -n $MY_SECRET | base64)
 
+
+# Check if a namespace of minio already exists
+if [ "$MINIO_NS" -eq 0 ]
+then
+    kubectl create namespace minio
+fi
+
 # Check if a deployment of minio already exists
 if [ "$MINIO_DEPLOY" -eq 1 ]
 then
-    kubectl delete -f minio-deployment.yaml
+    kubectl delete -f minio-deployment.yaml --namespace minio
 fi
 
 # Substitute MINIO_ACCESS_KEY & MINIO_SECRET_KEY in minio-secret.yml
@@ -35,13 +43,13 @@ sed -i "s/accesskey.*/accesskey: $MINIO_USER/g" minio-secret.yaml
 sed -i "s/secretkey.*/secretkey: $MINIO_SECRET/g" minio-secret.yaml
 
 # Apply secret & (re)deploy minio
-kubectl apply -f minio-secret.yaml
-kubectl apply -f minio-deployment.yaml
+kubectl apply -f minio-secret.yaml --namespace minio
+kubectl apply -f minio-deployment.yaml --namespace minio
 
 # Check if a service of minio already exists
 if [ "$MINIO_SVC" -eq 0 ]
 then
-    kubectl apply -f minio-service.yaml
+    kubectl apply -f minio-service.yaml --namespace minio
 fi
 
 # Cleanup
