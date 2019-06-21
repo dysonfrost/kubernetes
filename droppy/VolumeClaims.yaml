@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    pvcname: droppy-pvc-config
+  name: droppy-pvc-config
+spec:
+  storageClassName: droppy-config
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    pvcname: droppy-pvc-files
+  name: droppy-pvc-files
+spec:
+  storageClassName: droppy-files
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+
