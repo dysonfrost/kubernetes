@@ -1,0 +1,18 @@
+---
+# tasks file for deploy-metallb
+- name: Install nginx-test
+  command: "kubectl apply -f -"
+  args:
+    stdin: "{{ item }}"
+  with_items:
+    - "{{ lookup('template', 'Deployment.yaml.j2') }}"
+    - "{{ lookup('template', 'Service.yaml.j2') }}"
+
+- name: Register External IP Address allocated to nginx
+  shell: |
+    kubectl get service {{ k8s_nginx_service }} -o jsonpath='{..ip}'
+  register: external_ip
+
+- set_fact:
+    k8s_nginx_externalIP: "{{ external_ip.stdout }}"
+# vim: set ts=2 sw=2:

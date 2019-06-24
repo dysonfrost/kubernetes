@@ -1,0 +1,12 @@
+---
+# vars file for deploy-metallb
+k8s_nginx_image: "nginx:1"
+
+k8s_nginx_deployment: "nginx-deployment"
+k8s_nginx_service: "nginx-service"
+
+k8s_nginx_replicas: "1"
+k8s_nginx_app: "nginx"
+k8s_nginx_type: "LoadBalancer"
+
+# vim: set ts=2 sw=2:

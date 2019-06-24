@@ -1,0 +1,21 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ k8s_nginx_deployment }}
+spec:
+  replicas: {{ k8s_nginx_replicas }}
+  selector:
+    matchLabels:
+      app: {{ k8s_nginx_app }}
+  template:
+    metadata:
+      labels:
+        app: {{ k8s_nginx_app }}
+    spec:
+      containers:
+      - name: nginx
+        image: {{ k8s_nginx_image }}
+        ports:
+        - name: http
+          containerPort: 80
+
