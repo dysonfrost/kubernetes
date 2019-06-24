@@ -1,2 +1,19 @@
 ---
 # tasks file for build-minikube
+- name: Check minikube state
+  shell: |
+    virsh  -c qemu:///system list --state-running --name | 
+    grep {{ inventory_hostname }} |
+    wc -l
+  register: minikube_state
+  failed_when: "minikube_state.rc == 2"
+  check_mode: no
+
+- name: Create and configure minikube (should take around 12 minutes)
+  command: vagrant up
+  when: minikube_state.stdout != '1'
+
+- name: Copy ssh-config to ./{{ vagrant_ssh_config }}
+  shell: vagrant ssh-config > ./{{ vagrant_ssh_config }}
+
+# vim: set ts=2 sw=2:

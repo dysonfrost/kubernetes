@@ -1,2 +1,21 @@
 ---
 # tasks file for clean-minikube
+- name: Check minikube state
+  shell: |
+    virsh  -c qemu:///system list --state-running --name | 
+    grep {{ inventory_hostname }} |
+    wc -l
+  register: minikube_state
+  failed_when: "minikube_state.rc == 2"
+  check_mode: no
+
+- name: Destroy minikube domain
+  command: vagrant destroy -f
+  when: minikube_state.stdout == '1'
+
+- name: Remove ansible local ssh-config file
+  file:
+    state: absent
+    path: "{{ vagrant_ssh_config }}"
+
+# vim: set ts=2 sw=2:

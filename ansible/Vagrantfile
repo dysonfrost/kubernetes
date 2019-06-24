@@ -13,7 +13,7 @@ CPUS = ENV['CPUS'] || 2
 
 # User Data Mount
 #SRCDIR = ENV['SRCDIR'] || "/home/"+ENV['USER']+"/test"
-SRCDIR = ENV['SRCDIR'] || "/tmp/vagrant"
+SRCDIR = ENV['SRCDIR'] || "/home/wmm/projects/kubernetes/ansible"
 DSTDIR = ENV['DSTDIR'] || "/home/vagrant/data"
 
 # Management 

@@ -1,0 +1,6 @@
+vagrant_ssh_config: ssh_minikube.cfg
+k8s_metallb_vagrant_pool:
+  name: "my-ip-space"
+  proto: "layer2"
+  addresses:
+  - 192.168.121.130-192.168.121.199
