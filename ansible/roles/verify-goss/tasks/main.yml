@@ -8,9 +8,12 @@
     dest: "{{ goss_path }}"
     src: "{{ goss_tpl_name }}"
 
-- name: Goss validate
-  goss:
-    path: "{{ goss_path }}"
+- name: Goss valide
+  command: |
+    goss validate {{ goss_path }}
+# - name: Goss validate
+#   goss:
+#     path: "{{ goss_path }}"
   register: goss
 
 - name: Goss results
