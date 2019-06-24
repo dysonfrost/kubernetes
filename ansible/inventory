@@ -1,0 +1,11 @@
+[prod]
+manager
+
+[stage]
+minikube-vagrant-01 
+
+[stage:vars]
+ env=stage
+ ansible_ssh_common_args='-F {{ vagrant_ssh_config }}'
+ ansible_python_interpreter='/usr/bin/python3'%
+ 

@@ -1,0 +1,55 @@
+---
+# BUILD STAGE ENVIRONMENT
+- name: BUILD MINIKUBE
+  hosts: stage
+  connection: local
+  run_once: true
+  vars_files:
+    - group_vars/vagrant.yml
+  
+  roles:
+    - { role: build-minikube,
+        tags: build }
+
+# DEPLOY APPLICATIONS USING KUBECTL
+- name: DEPLOY APPLICATIONS
+  hosts: all
+  vars_files:
+    - group_vars/prod.yml    
+    - group_vars/vagrant.yml
+
+  roles: 
+    - { role: deploy-metallb,
+        tags: deploy }
+
+    - { role: deploy-nginx-test, 
+        tags: deploy }
+
+    - { role: deploy-whoami,
+        tags: deploy }
+
+    - { role: deploy-droppy,
+        tags: deploy }
+
+# VERIFY DEPLOYMENTS USING GOSS
+- name: VERIFY GOSS
+  hosts: all
+  vars_files:
+    - group_vars/vagrant.yml
+    - group_vars/prod.yml
+
+  roles:
+    - { role: verify-goss,
+        tags: verify }
+
+# DESTROY STAGE ENVIRONMENT
+- name: CLEAN MINIKUBE
+  hosts: stage
+  connection: local
+  run_once: true
+  vars_files:
+    - group_vars/vagrant.yml
+  
+  roles:
+    - { role: clean-minikube,
+        tags: clean }
