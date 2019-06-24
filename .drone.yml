@@ -1,0 +1,9 @@
+workspace:
+  base: /go
+  path: src/github.com/dysonfrost/kubernetes/ansible
+
+pipeline:
+  build:
+    image: webdevops/ansible:latest
+    commands:
+      - ansible -m ping prod -i inventory
