@@ -8,6 +8,10 @@
     - "{{ lookup('template', 'Deployment.yaml.j2') }}"
     - "{{ lookup('template', 'Service.yaml.j2') }}"
 
+- name: Waiting for container to start
+  wait_for: timeout=5
+  delegate_to: localhost
+
 - name: Register External IP Address allocated to nginx
   shell: |
     kubectl get service {{ k8s_nginx_service }} -o jsonpath='{..ip}'

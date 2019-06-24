@@ -10,6 +10,10 @@
     - "{{ lookup('template', 'Service.yaml.j2') }}"
     - "{{ lookup('template', 'Ingress.yaml.j2') }}"
 
+- name: Waiting for containers to start
+  wait_for: timeout=5
+  delegate_to: localhost
+
 - name: Register External IP Address allocated to whoami
   shell: |
     kubectl -n {{ k8s_whoami_namespace }} get service {{ k8s_whoami_service }} -o jsonpath='{..ip}'

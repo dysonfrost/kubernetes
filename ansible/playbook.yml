@@ -34,6 +34,7 @@
 # VERIFY DEPLOYMENTS USING GOSS
 - name: VERIFY GOSS
   hosts: all
+  any_errors_fatal: true
   vars_files:
     - group_vars/vagrant.yml
     - group_vars/prod.yml

@@ -12,6 +12,10 @@
     - "{{ lookup('template', 'Service.yaml.j2') }}"
     - "{{ lookup('template', 'Ingress.yaml.j2') }}"
 
+- name: Waiting for container to start
+  wait_for: timeout=10
+  delegate_to: localhost
+
 - name: Register External IP Address allocated to droppy
   shell: |
     kubectl -n {{ k8s_droppy_namespace }} get service {{ k8s_droppy_service }} -o jsonpath='{..ip}'
