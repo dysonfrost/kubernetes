@@ -1,2 +1,21 @@
 ---
 # tasks file for deploy-whoami
+- name: Install whoami
+  command: "kubectl apply -f -"
+  args:
+    stdin: "{{ item }}"
+  with_items:
+    - "{{ lookup('template', 'Namespace.yaml.j2') }}"
+    - "{{ lookup('template', 'Deployment.yaml.j2') }}"
+    - "{{ lookup('template', 'Service.yaml.j2') }}"
+    - "{{ lookup('template', 'Ingress.yaml.j2') }}"
+
+- name: Register External IP Address allocated to whoami
+  shell: |
+    kubectl -n {{ k8s_whoami_namespace }} get service {{ k8s_whoami_service }} -o jsonpath='{..ip}'
+  register: external_ip
+
+- set_fact:
+    k8s_whoami_externalIP: "{{ external_ip.stdout }}"
+
+# vim: set ts=2 sw=2:

@@ -1,2 +1,27 @@
 ---
 # vars file for deploy-whoami
+k8s_whoami_image: "containous/whoami"
+k8s_whoami_container: "whoami-container"
+
+k8s_whoami_namespace: "whoami"
+k8s_whoami_deployment: "whoami-deployment"
+k8s_whoami_app: "whoami"
+k8s_whoami_service: "whoami-service"
+
+k8s_whoami_node_selector: {}
+k8s_whoami_replicas: 3
+k8s_whoami_revision_history: 1
+
+k8s_whoami_deployment_labels: {}
+k8s_whoami_deployment_annotations: {}
+
+k8s_whoami_service_type: LoadBalancer
+
+k8s_whoami_setup_ingress: false
+k8s_whoami_ingress:
+  name: "whoami-ingress"
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+  tls:
+
+# vim: set ts=2 sw=2:

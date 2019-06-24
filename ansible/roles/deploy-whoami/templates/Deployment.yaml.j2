@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ k8s_whoami_namespace }}
+  name: {{ k8s_whoami_deployment }}
+spec:
+  replicas: {{ k8s_whoami_replicas }}
+  selector:
+    matchLabels:
+      app: {{ k8s_whoami_app }}
+  template:
+    metadata:
+      labels:
+        app: {{ k8s_whoami_app }}
+    spec:
+      containers:
+      - name: {{ k8s_whoami_container }}
+        image: {{ k8s_whoami_image }}
