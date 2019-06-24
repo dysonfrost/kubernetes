@@ -1,0 +1,97 @@
+########################
+# COMMAND CHECK STDOUT
+
+# Check droppy pods
+command:
+  kubectl -n droppy get pod -o jsonpath='{range .items[*]}{.status.phase}':
+    exit-status: 0
+    stdout:
+    - Running
+    stderr: []
+    timeout: 10000
+# Check droppy volumes
+  kubectl -n droppy get pv droppy-config -o jsonpath='{.status.phase}':
+    exit-status: 0
+    stdout:
+    - Bound
+    stderr: []
+    timeout: 10000
+  kubectl -n droppy get pv droppy-files -o jsonpath='{.status.phase}':
+    exit-status: 0
+    stdout:
+    - Bound
+    stderr: []
+    timeout: 10000
+# Check droppy External IP
+  kubectl -n droppy get service droppy-service -o jsonpath='{..ip}'|wc -w:
+    exit-status: 0
+    stdout:
+    - "1"
+    stderr: []
+    timeout: 10000
+
+# Check whoami pods
+  kubectl -n whoami get pod -o jsonpath='{range .items[*]}{.status.phase}':
+    exit-status: 0
+    stdout:
+    - RunningRunningRunning
+    stderr: []
+    timeout: 0
+# Check whoami External IP
+  kubectl -n whoami get service whoami-service -o jsonpath='{..ip}'|wc -w:
+    exit-status: 0
+    stdout:
+    - "1"
+    stderr: []
+    timeout: 10000
+
+# Check nginx pods
+  kubectl -n default get pod -o jsonpath='{range .items[*]}{.status.phase}':
+    exit-status: 0
+    stdout:
+    - Running
+    stderr: []
+    timeout: 0
+# Check nginx External IP
+  kubectl -n default get service nginx-service -o jsonpath='{..ip}'|wc -w:
+    exit-status: 0
+    stdout:
+    - "1"
+    stderr: []
+    timeout: 10000
+
+########################
+# HTTP CHECK
+
+# Check droppy http endpoint
+http:
+{% if 'stage' in group_names %}
+  http://{{ k8s_droppy_externalIP }}:
+{% else %}
+  http://{{ k8s_droppy_fqdn }}:
+{% endif %}
+    status: 200
+    allow-insecure: false
+    no-follow-redirects: false
+    timeout: 5000
+    body: []
+
+# Check whoami http endpoint
+{% if 'stage' in group_names %}
+  http://{{ k8s_whoami_externalIP }}:
+{% else %}
+  http://{{ k8s_whoami_fqdn }}:
+{% endif %}
+    status: 200
+    allow-insecure: false
+    no-follow-redirects: false
+    timeout: 5000
+    body: []
+
+# Check nginx http endpoint
+  http://{{ k8s_nginx_externalIP }}:
+    status: 200
+    allow-insecure: false
+    no-follow-redirects: false
+    timeout: 5000
+    body: []

@@ -1,2 +1,6 @@
 ---
 # vars file for verify-goss
+goss_tpl_name: goss.yaml.j2
+goss_path: ~/goss.yaml
+
+# vim: set ts=2 sw=2:

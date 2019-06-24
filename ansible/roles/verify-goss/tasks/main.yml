@@ -1,2 +1,23 @@
 ---
 # tasks file for verify-goss
+- name: Waiting for containers to start
+  wait_for: timeout=10
+  delegate_to: localhost
+
+- template:
+    dest: "{{ goss_path }}"
+    src: "{{ goss_tpl_name }}"
+
+- name: Goss validate
+  goss:
+    path: "{{ goss_path }}"
+  register: goss
+
+- name: Goss results
+  debug: 
+    var: "{{ goss.stdout_lines | to_json }}"
+
+- name: Cleaning artifacts
+  file:
+    state: absent
+    path: "{{ goss_path }}"
