@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ k8s_metallb_namespace }}
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: {{ k8s_metallb_pool.name }}
+      protocol: {{ k8s_metallb_pool.proto }}
+      addresses:
+{% if 'stage' in group_names %}
+      {{ k8s_metallb_vagrant_pool.addresses | to_nice_yaml | indent }}
+{% else %}
+      {{ k8s_metallb_pool.addresses | to_nice_yaml | indent }}
+{% endif %}

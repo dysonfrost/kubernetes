@@ -1,2 +1,15 @@
 ---
 # tasks file for deploy-metallb
+- name: Install metallb
+  command: "kubectl apply -f -"
+  args:
+    stdin: "{{ item }}"
+  with_items:
+    - "{{ lookup('template', 'metallb-system.yaml.j2') }}"
+    - "{{ lookup('template', 'layer2-config.yaml.j2') }}"
+
+- name: The configuration should take effect within a few seconds
+  wait_for: timeout=5
+  delegate_to: localhost
+
+# vim: set ts=2 sw=2:

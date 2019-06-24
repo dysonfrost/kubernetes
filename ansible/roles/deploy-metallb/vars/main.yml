@@ -1,2 +1,23 @@
 ---
 # vars file for deploy-metallb
+k8s_metallb_speaker_image: "metallb/speaker:v0.7.3"
+k8s_metallb_controller_image: "metallb/controller:v0.7.3"
+k8s_metallb_nginx_image: "nginx:1"
+
+k8s_metallb_namespace: "metallb-system"
+k8s_metallb_app: "metallb"
+
+
+k8s_metallb_pool:
+  name: "my-ip-space"
+  proto: "layer2"
+  addresses:
+  - 192.168.1.130-192.168.1.199
+
+k8s_metallb_nginx_deployment: "nginx-deployment"
+k8s_metallb_nginx_service: "nginx-service"
+k8s_metallb_nginx_replicas: "1"
+k8s_metallb_nginx_app: "nginx"
+k8s_metallb_nginx_type: "LoadBalancer"
+
+# vim: set ts=2 sw=2:
