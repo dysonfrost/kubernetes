@@ -3,13 +3,15 @@ workspace:
   path: src/github.com/dysonfrost/kubernetes
 
 pipeline:
-  build:
+
+  service:
     image: webdevops/ansible:latest
     commands:
-      - apt-get update && apt-get install -y sshpass
-      - sshpass -p $$MANAGER_SECRET ssh -o StrictHostKeyChecking=no esgi@manager
-      - exit
+      - echo "helloworld" > ~/hello
+      - mkdir /root/.ssh && echo $$SSH_KEY > /root/.ssh/drone_id_rsa && chmod 0600 /root/.ssh/drone_id_rsa
+      - echo $$SSH_CONFIG > ansible/ssh_manager.cfg
+      - cat ansible/ssh_manager.cfg
       - ansible -m ping prod -i ansible/inventory
-    environment:
-    secrets: [MANAGER_SSH, MANAGER_USER, MANAGER_SECRET]
+    secrets: [SSH_KEY, SSH_CONFIG]
 
+# ON EST BON FAUT SAVOIR UTILISER SSH-COPY-ID MAINTENANT
