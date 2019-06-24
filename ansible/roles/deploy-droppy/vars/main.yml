@@ -1,2 +1,46 @@
 ---
 # vars file for deploy-droppy
+k8s_droppy_image: "silverwind/droppy"
+k8s_droppy_container: "droppy-container"
+
+
+k8s_droppy_config_pv: droppy-config
+k8s_droppy_files_pv: droppy-files
+
+k8s_droppy_config_claim: droppy-pvc-config
+k8s_droppy_files_claim: droppy-pvc-files
+
+k8s_droppy_config_size: 100Mi
+k8s_droppy_files_size: 10Gi
+k8s_droppy_config_mode: ReadWriteOnce
+k8s_droppy_files_mode: ReadWriteMany
+
+k8s_droppy_config_hostPath: /mnt/droppy/config
+k8s_droppy_files_hostPath: /mnt/droppy/files
+k8s_droppy_config_mountPath: /config 
+k8s_droppy_files_mountPath: /files
+
+
+k8s_droppy_namespace: "droppy"
+k8s_droppy_deployment: "droppy-deployment"
+k8s_droppy_app: "droppy"
+k8s_droppy_service: "droppy-service"
+
+k8s_droppy_node_selector: {}
+k8s_droppy_replicas: 1
+k8s_droppy_strat_type: Recreate
+
+
+k8s_droppy_deployment_labels: {}
+k8s_droppy_deployment_annotations: {}
+
+k8s_droppy_service_type: LoadBalancer
+
+k8s_droppy_setup_ingress: false
+k8s_droppy_ingress:
+  name: "droppy-ingress"
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+  tls:
+
+# vim: set ts=2 sw=2:

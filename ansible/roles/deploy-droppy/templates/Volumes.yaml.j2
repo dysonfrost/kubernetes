@@ -1,0 +1,31 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ k8s_droppy_config_pv }}
+  labels:
+    type: local
+    app: {{ k8s_droppy_app }}
+spec:
+  storageClassName: {{ k8s_droppy_config_pv }}
+  capacity:
+    storage: {{ k8s_droppy_config_size }}
+  accessModes:
+    - {{ k8s_droppy_config_mode }}
+  hostPath:
+    path: "{{ k8s_droppy_config_hostPath }}"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ k8s_droppy_files_pv }}
+  labels:
+    type: local
+    app: droppy
+spec:
+  storageClassName: {{ k8s_droppy_files_pv }}
+  capacity:
+    storage: {{ k8s_droppy_files_size }}
+  accessModes:
+    - {{ k8s_droppy_files_mode }}
+  hostPath:
+    path: "{{ k8s_droppy_files_hostPath }}"

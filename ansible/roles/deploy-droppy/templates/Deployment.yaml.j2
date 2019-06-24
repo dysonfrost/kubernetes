@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ k8s_droppy_namespace }}
+  name: {{ k8s_droppy_deployment }}
+spec:
+  replicas: {{ k8s_droppy_replicas }}
+  selector:
+    matchLabels:
+      app: {{ k8s_droppy_app }}
+  strategy:
+    type: {{ k8s_droppy_strat_type }}
+  template:
+    metadata:
+      labels:
+        app: {{ k8s_droppy_app }}
+    spec:
+      containers:
+      - name: {{ k8s_droppy_container }}
+        image: {{ k8s_droppy_image }}
+        ports:
+        - containerPort: 8989
+        volumeMounts:
+        - mountPath: {{ k8s_droppy_config_mountPath }}
+          name: {{ k8s_droppy_config_pv }}
+        - mountPath: {{ k8s_droppy_files_mountPath }}
+          name: {{ k8s_droppy_files_pv }}
+      restartPolicy: Always
+      volumes:
+      - name: {{ k8s_droppy_config_pv }}
+        persistentVolumeClaim:
+          claimName: {{ k8s_droppy_config_claim }}
+      - name: {{ k8s_droppy_files_pv }}
+        persistentVolumeClaim:
+          claimName: {{ k8s_droppy_files_claim }}

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    pvcname: {{ k8s_droppy_config_claim }}
+  namespace: {{ k8s_droppy_namespace }}
+  name: {{ k8s_droppy_config_claim }}
+spec:
+  storageClassName: {{ k8s_droppy_config_pv }}
+  accessModes:
+  - {{ k8s_droppy_config_mode }}
+  resources:
+    requests:
+      storage: {{ k8s_droppy_config_size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    pvcname: {{ k8s_droppy_files_claim }}
+  namespace: {{ k8s_droppy_namespace }}
+  name: {{ k8s_droppy_files_claim }}
+spec:
+  storageClassName: {{ k8s_droppy_files_pv }}
+  accessModes:
+  - {{ k8s_droppy_files_mode }}
+  resources:
+    requests:
+      storage: {{ k8s_droppy_files_size }}
