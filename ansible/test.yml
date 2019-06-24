@@ -1,0 +1,9 @@
+---
+# DEPLOY APPLICATIONS USING KUBECTL
+- name: DEPLOY APPLICATIONS
+  hosts: all
+
+  tasks:
+  - name: ping test
+    shell: |
+      ping manager -c 4

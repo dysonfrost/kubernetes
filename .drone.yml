@@ -7,11 +7,11 @@ pipeline:
   service:
     image: webdevops/ansible:latest
     commands:
-      - echo "helloworld" > ~/hello
-      - mkdir /root/.ssh && echo $$SSH_KEY > /root/.ssh/drone_id_rsa && chmod 0600 /root/.ssh/drone_id_rsa
-      - echo $$SSH_CONFIG > ansible/ssh_manager.cfg
-      - cat ansible/ssh_manager.cfg
+      - mkdir /root/.ssh && echo "$$SSH_KEY" > ~/.ssh/ansible_id_rsa && chmod 0600 ~/.ssh/ansible_id_rsa
       - ansible -m ping prod -i ansible/inventory
-    secrets: [SSH_KEY, SSH_CONFIG]
+      - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml --syntax-check
+
+    secrets: [SSH_KEY]
+
 
 # ON EST BON FAUT SAVOIR UTILISER SSH-COPY-ID MAINTENANT
