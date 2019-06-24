@@ -1,9 +1,15 @@
 workspace:
   base: /go
-  path: src/github.com/dysonfrost/kubernetes/ansible
+  path: src/github.com/dysonfrost/kubernetes
 
 pipeline:
   build:
     image: webdevops/ansible:latest
     commands:
-      - ansible -m ping prod -i inventory
+      - apt-get update && apt-get install -y sshpass
+      - sshpass -p $$MANAGER_SECRET ssh -o StrictHostKeyChecking=no esgi@manager
+      - exit
+      - ansible -m ping prod -i ansible/inventory
+    environment:
+    secrets: [MANAGER_SSH, MANAGER_USER, MANAGER_SECRET]
+
