@@ -13,18 +13,20 @@ pipeline:
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
     secrets: [SSH_KEY]
 
-  slack:
-    image: plugins/slack
-    settings:
-      webhook:
-        from_secret: slack_webhook
-      channel: zuckerbot
-      template: >
-        {{#success build.status}}
-          build {{build.number}} succeeded. Good job.
-        {{else}}
-          build {{build.number}} failed. Fix me please.
-        {{/success}}
+  notify:
+    image: drillster/drone-email
+    from: noreply@github.com
+    host: smtp.mailgun.org
+    username: $$email_username
+    password: $$email_password
+    recipients: $$email_recipients
+    secrets: [ email_username, email_password, email_recipients ]
+    subject: >
+      [{{ build.status }}]
+      {{ repo.owner }}/{{ repo.name }}
+      ({{ build.branch }} - {{ truncate build.commit 8 }})
+    body: >
+      You had one job phil.
 
 
   # notify:
