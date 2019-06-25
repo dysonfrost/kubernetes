@@ -4,12 +4,32 @@ workspace:
 
 pipeline:
 
-  service:
+  run:
     image: webdevops/ansible:latest
     commands:
       - mkdir /root/.ssh && echo "$$SSH_KEY" > ~/.ssh/ansible_id_rsa && chmod 0600 ~/.ssh/ansible_id_rsa
       - ansible -m ping prod -i ansible/inventory
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml --syntax-check
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
-
     secrets: [SSH_KEY]
+
+  discord:
+    image: appleboy/drone-discord
+    webhook_id: "$$DISCORD_WEBHOOK_ID"
+    webhook_token: "$$DISCORD_WEBHOOK_TOKEN"
+    secrets: [ DISCORD_WEBHOOK_ID, DISCORD_WEBHOOK_TOKEN ]
+    message: |
+      {{ success build.status }}
+        build {{ build.number }} succeeded. Good job.
+      {{ else }}
+        build {{ build.number }} failed. Fix me please.
+      {{ /success }}
+
+  # notify:
+  #   image: drillster/drone-email
+  #   host: $$SMTP_HOST
+  #   username: $$MAIL_USERNAME
+  #   password: $$MAIL_SECRET
+  #   from: $$DRONE_DOMAIN
+  #   recipients: [ $$MAIL_RECIPIENT ]
+  #   secrets: [SMTP_HOST, MAIL_USERNAME, MAIL_SECRETDRONE_DOMAIN, MAIL_RECIPENT]
