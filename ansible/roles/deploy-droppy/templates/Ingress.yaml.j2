@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   namespace: {{ k8s_droppy_namespace }}
   name: {{ k8s_droppy_ingress.name }}
-{% if 'stage' in group_names %}
+{% if 'prod' in group_names %}
   annotations:
     {{ k8s_droppy_ingress.annotations | to_nice_yaml | indent }}
 {% endif %}
