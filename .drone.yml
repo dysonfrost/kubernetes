@@ -13,17 +13,19 @@ pipeline:
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
     secrets: [SSH_KEY]
 
-  discord:
-    image: appleboy/drone-discord
-    webhook_id: "$$DISCORD_WEBHOOK_ID"
-    webhook_token: "$$DISCORD_WEBHOOK_TOKEN"
-    secrets: [ DISCORD_WEBHOOK_ID, DISCORD_WEBHOOK_TOKEN ]
-    message: |
-      {{ success build.status }}
-        build {{ build.number }} succeeded. Good job.
-      {{ else }}
-        build {{ build.number }} failed. Fix me please.
-      {{ /success }}
+  slack:
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: zuckerbot
+      template: >
+        {{#success build.status}}
+          build {{build.number}} succeeded. Good job.
+        {{else}}
+          build {{build.number}} failed. Fix me please.
+        {{/success}}
+
 
   # notify:
   #   image: drillster/drone-email
