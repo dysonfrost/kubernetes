@@ -10,8 +10,6 @@ pipeline:
       - mkdir /root/.ssh && echo "$$SSH_KEY" > ~/.ssh/ansible_id_rsa && chmod 0600 ~/.ssh/ansible_id_rsa
       - ansible -m ping prod -i ansible/inventory
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml --syntax-check
+      - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
 
     secrets: [SSH_KEY]
-
-
-# ON EST BON FAUT SAVOIR UTILISER SSH-COPY-ID MAINTENANT
