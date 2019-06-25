@@ -28,6 +28,8 @@ pipeline:
     body: >
       You had one job phil.
 
+branches: master
+
 
   # notify:
   #   image: drillster/drone-email
