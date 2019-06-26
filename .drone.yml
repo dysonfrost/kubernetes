@@ -34,6 +34,10 @@ pipeline:
         build {{build.number}} failed. You had one job Phil.
       {{/success}} 
 
-      For more infos, please visit {{build.link}}
+      - Drone build details:
+      {{build.link}}
+
+      - Git commit details:
+      https://github.com/dysonfrost/{{repo.name}}/commit/{{build.commit}}
     when:
       status: [ success, failure ]
