@@ -41,3 +41,5 @@ pipeline:
       https://github.com/dysonfrost/{{repo.name}}/commit/{{build.commit}}
     when:
       status: [ success, failure ]
+
+branches: master
