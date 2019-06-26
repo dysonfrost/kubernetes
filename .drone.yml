@@ -12,28 +12,32 @@ pipeline:
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml --syntax-check
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
     secrets: [SSH_KEY]
+    when:
+      branch: master
 
-  notify:
-    image: drillster/drone-email
-    from: noreply@github.com
-    host: smtp.mailgun.org
-    username: $$email_username
-    password: $$email_password
-    recipients: $$email_recipients
-    secrets: [ email_username, email_password, email_recipients ]
-    subject: >
-      [{{ build.status }}]
-      {{ repo.owner }}/{{ repo.name }}
-      ({{ build.branch }} - {{ truncate build.commit 8 }})
-    body: >
-      You had one job phil.
+  discord:
+    image: appleboy/drone-discord
+    webhook_id: ${DISCORD_WEBHOOK_ID}
+    webhook_token: ${DISCORD_WEBHOOK_TOKEN}
+    secrets: [ DISCORD_WEBHOOK_ID, DISCORD_WEBHOOK_TOKEN ]
+    username: Zuckerdrone
+    message: |
+      Repository: {{repo.name}}
+      Initiated by {{build.author}}
 
+      Type: {{build.event}} on branch {{build.branch}}
 
-  # notify:
-  #   image: drillster/drone-email
-  #   host: $$SMTP_HOST
-  #   username: $$MAIL_USERNAME
-  #   password: $$MAIL_SECRET
-  #   from: $$DRONE_DOMAIN
-  #   recipients: [ $$MAIL_RECIPIENT ]
-  #   secrets: [SMTP_HOST, MAIL_USERNAME, MAIL_SECRETDRONE_DOMAIN, MAIL_RECIPENT]
+      Results:
+      {{#success build.status}}
+        build {{build.number}} succeeded. Good job.
+      {{else}}
+        build {{build.number}} failed. You had one job Phil.
+      {{/success}} 
+
+      - Drone build details:
+      {{build.link}}
+
+      - Git commit details:
+      https://github.com/dysonfrost/{{repo.name}}/commit/{{build.commit}}
+    when:
+      status: [ success, failure ]

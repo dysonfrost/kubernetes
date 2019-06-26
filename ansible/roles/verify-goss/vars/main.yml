@@ -1,5 +1,6 @@
 ---
 # vars file for verify-goss
+goss_bin: /usr/local/bin/goss
 goss_tpl_name: goss.yaml.j2
 goss_path: ~/goss.yaml
 
