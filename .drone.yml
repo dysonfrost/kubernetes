@@ -12,8 +12,6 @@ pipeline:
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml --syntax-check
       - ansible-playbook -i ansible/inventory -l prod ansible/playbook.yml
     secrets: [SSH_KEY]
-    when:
-      branch: master
 
   discord:
     image: appleboy/drone-discord
@@ -42,4 +40,4 @@ pipeline:
     when:
       status: [ success, failure ]
 
-branches: master
+branches: esgi
