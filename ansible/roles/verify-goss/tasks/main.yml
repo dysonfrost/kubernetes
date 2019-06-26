@@ -4,6 +4,17 @@
   wait_for: timeout=10
   delegate_to: localhost
 
+- name: Check that Goss exists
+  stat:
+    path: "{{ goss_bin }}"
+  register: stat_result
+
+- name: Install Goss
+  file:
+    shell: |
+      curl -fsSL https://goss.rocks/install | sudo sh
+  when: stat_result.stat.exists == False
+
 - template:
     dest: "{{ goss_path }}"
     src: "{{ goss_tpl_name }}"
